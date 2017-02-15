@@ -1,0 +1,143 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="../../template/principal.xhtml">
+	<ui:define name="content">
+		
+		<h:form id="form">
+			<p:messages id="messages" showDetail="true" autoUpdate="true" for="msgFrame" closable="true" style="float:bottom;" />
+			<p:dataTable id="tabla" var="listaCategoria" value="#{administrarCategoria.spaCategorias}" widgetVar="categoriaTable" styleClass="table"
+				emptyMessage="No se encontraron categorias registradas" rows="20" rowKey="#{listaCategoria.idCategoria}" paginator="true" paginatorPosition="bottom" editable="true"
+				selection="#{administrarCategoria.categoriaSeleccionada}" selectionMode="single">
+				<f:facet name="header">
+					<p:outputLabel value="Categorias" styleClass="informe-header" />
+					<p:commandButton value="Nuevo" icon="agregar-ico" styleClass="button_menu" onclick="dialogo.show()" title="Nueva categoria" />
+					<p:commandButton value="Eliminar" icon="borrar-ico" styleClass="button_menu" title="Elimnar" actionListener="#{administrarCategoria.eliminarCategoria}" update=":form:tabla">
+						<p:confirm header="Confirmacion" message="Desea eliminar la categoria seleccionada?" icon="ui-icon-alert" />
+					</p:commandButton>
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+						<p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+						<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					</p:confirmDialog>
+					<br/>
+					<br/>
+				</f:facet>
+				<p:ajax event="rowEdit" listener="#{administrarCategoria.actualizarCategoria}" update=":form:messages, :form:tabla" />
+				<p:ajax event="rowEditCancel" listener="#{administrarCategoria.cancelarActualizacionCategoria}" update=":form:messages, :form:tabla" />
+
+				<p:column headerText="Id" styleClass="table_content">
+					<h:outputText value="#{listaCategoria.idCategoria}" />
+				</p:column>
+				<p:column headerText="Codigo" styleClass="table_content" >
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{listaCategoria.codCategoria}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{listaCategoria.codCategoria}" label="Codigo categoria" onblur="value=value.toUpperCase()" style="width:15%" maxlength="4"/>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>				
+				<p:column headerText="Descripción (español)" styleClass="table_content">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{listaCategoria.descripcionEspanol}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{listaCategoria.descripcionEspanol}" label="Descripción (español)" required="true" onblur="value=value.toUpperCase()" maxlength="199"/>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Descripción (ingles)" styleClass="table_content">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{listaCategoria.descripcionIngles}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{listaCategoria.descripcionIngles}" label="Descripción (ingles)" required="true" onblur="value=value.toUpperCase()" maxlength="199"/>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Tipo Tratamiento" styleClass="table_content">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{listaCategoria.spaTipoTratamiento}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu id="selectTratamiento" value="#{listaCategoria.spaTipoTratamiento}" converter="#{tipoTratamientoConverter}" required="true">
+								<f:selectItems value="#{administrarCategoria.spaTiposTratamientos}" var="t" itemLabel="#{t.descripcionEspanol}" itemValue="#{t}"/>
+								<f:validateLength minimum="1" />
+							</p:selectOneMenu>							
+						</f:facet>
+					</p:cellEditor>
+				</p:column>				
+				<p:column headerText="Fecha Creación" styleClass="table_content">
+					<h:outputText value="#{listaCategoria.creationDate}">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Creado Por" styleClass="table_content">
+					<h:outputText value="#{listaCategoria.createdBy}" />
+				</p:column>
+				<p:column headerText="Activo" styleClass="table_content">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{listaCategoria.activo}" />
+						</f:facet>
+						<f:facet name="input">
+							<h:selectOneMenu value="#{listaCategoria.activo}">
+								<f:selectItem itemLabel="Activo" itemValue="A" />
+								<f:selectItem itemLabel="Inactivo" itemValue="I" />
+							</h:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>				
+				<p:column headerText="Editar" style="width:6%" styleClass="table_content">
+					<p:rowEditor />
+				</p:column>
+			</p:dataTable>
+
+		</h:form>
+		
+		<h:form id="formPanel">
+			<p:dialog id="dialogo" widgetVar="dialogo" header="Nueva Categoria" resizable="false">
+				<p:messages id="messagesPanel" autoUpdate="true" closable="true" for="mensajePanel" />
+				<h:panelGrid id="panel" columns="3" cellpadding="5" cellspacing="1">
+
+					<p:outputLabel value="Codigo: " />
+					<p:inputText id="codigo" value="#{administrarCategoria.spaCategoria.codCategoria}" required="true" requiredMessage="El campo codigo categoria es requerido, debe ser numerico." maxlength="4">
+						<f:validateLength minimum="1" />
+					</p:inputText>
+					<p:message for="codigo" display="icon" />
+
+					<p:outputLabel value="Descripcion en español: " />
+					<p:inputText id="descripcionEspanol" value="#{administrarCategoria.spaCategoria.descripcionEspanol}" required="true" requiredMessage="El campo de descripcion en español es requerido." onblur="value=value.toUpperCase()" maxlength="199">
+						<f:validateLength minimum="1" />
+					</p:inputText>
+					<p:message for="descripcionEspanol" display="icon" />
+
+					<p:outputLabel value="Descripcion en ingles: " />
+					<p:inputText id="descripcionIngles" value="#{administrarCategoria.spaCategoria.descripcionIngles}" required="true" requiredMessage="El campo de descripcion en ingles es requerido." onblur="value=value.toUpperCase()" maxlength="199">
+						<f:validateLength minimum="1" />
+					</p:inputText>
+					<p:message for="descripcionIngles" display="icon" />
+					
+					<p:outputLabel value="Tipo tratamiento: " />
+					<p:selectOneMenu id="desecho" value="#{administrarCategoria.spaCategoria.spaTipoTratamiento}" converter="#{tipoTratamientoConverter}" required="true" requiredMessage="Seleccione un tipo de tratamiento.">
+						<f:selectItem itemValue="#{null}" itemLabel="-- Seleccione Uno --" />
+						<f:selectItems value="#{administrarCategoria.spaTiposTratamientos}" var="tipo" itemLabel="#{tipo.descripcionEspanol}" itemValue="#{tipo}"/>
+						<f:validateLength minimum="1" />
+					</p:selectOneMenu>					
+					<p:message for="desecho" display="icon" />					
+					
+					<f:facet name="footer">
+						<p:commandButton value="Guardar" icon="save-ico" actionListener="#{administrarCategoria.guardarCategoria}" update=":formPanel:dialogo, :form:tabla"
+							oncomplete="dialogo.hide()" partialSubmit="true" styleClass="button_menu" validateClient="true"/>
+					</f:facet>
+				</h:panelGrid>
+			</p:dialog>
+		</h:form>
+		
+	</ui:define>
+</ui:composition>
+
+</html>

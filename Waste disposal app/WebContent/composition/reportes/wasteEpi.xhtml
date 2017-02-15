@@ -1,0 +1,38 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="../../template/principal.xhtml">
+	<ui:define name="content">
+
+
+		<p:panelGrid>
+			<f:facet name="header">
+				<p:row>
+					<p:column colspan="8" styleClass="form-header">
+							Reporte Waste EPI
+						</p:column>				
+				</p:row>
+			</f:facet>
+		</p:panelGrid>
+		<h:form id="form">
+		
+		<p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" style="float:bottom;" />
+			<h:panelGrid columns="4" cellpadding="5" cellspacing="1">
+				<p:outputLabel value="Fecha Inicial: " />
+				<p:calendar value="#{reportes.fechaInicio}" navigator="true" id="fechaInicio" />
+				<p:outputLabel value="Fecha Final: " />
+				<p:calendar value="#{reportes.fechaFin}" navigator="true" id="fechaFin" />
+		
+				<p:outputLabel value="Formato: " />
+				<p:selectOneMenu id="comboAprobador" value="#{reportes.formato}" required="true" requiredMessage="Debe seleccionar un aprobador.">
+					<f:selectItem itemValue="PDF" itemLabel="PDF" />
+					<f:selectItem itemValue="XLS" itemLabel="XLS" />
+				</p:selectOneMenu>
+	
+				<p:commandButton value="Generar Reporte" styleClass="button_menu" actionListener="#{reportes.reporteWasteEpi}" ajax="false"/>
+			</h:panelGrid>			
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+
+</html>

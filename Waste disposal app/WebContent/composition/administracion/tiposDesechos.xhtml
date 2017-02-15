@@ -1,0 +1,105 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="../../template/principal.xhtml">
+	<ui:define name="content">
+		
+		<h:form id="form">
+			<p:messages id="messages" showDetail="true" autoUpdate="true" for="msgFrame" closable="true" style="float:bottom;" />		
+			<p:dataTable id="tablaTipoDesecho" var="listaTipoDesecho" value="#{administrarTipoDesecho.spaTiposDesechos}" widgetVar="desechoTable" styleClass="table"
+				emptyMessage="No hay tipos de desechos registrados" rows="20" rowKey="#{listaTipoDesecho.idTipoDesecho}" paginator="true" paginatorPosition="bottom" editable="true"
+				selection="#{administrarTipoDesecho.tipoDesechoSeleccionado}" selectionMode="single">
+				<f:facet name="header">
+					<p:outputLabel value="Tipos de Desechos" styleClass="informe-header" />
+					<p:commandButton value="Nuevo" icon="agregar-ico" styleClass="button_menu" onclick="dialogoTipoDesecho.show()" title="Nuevo tipo desecho" />
+					<p:commandButton value="Eliminar" icon="borrar-ico" styleClass="button_menu" title="Elimnar" actionListener="#{administrarTipoDesecho.eliminarDesecho}" update=":form:tablaTipoDesecho">
+						<p:confirm header="Confirmacion" message="Desea eliminar el tipo de desecho seleccionado?" icon="ui-icon-alert" />
+					</p:commandButton>
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+						<p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+						<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					</p:confirmDialog>
+					<br/>
+					<br/>
+				</f:facet>
+				<p:ajax event="rowEdit" listener="#{administrarTipoDesecho.actualizarDesecho}" update=":form:messages" />
+				<p:ajax event="rowEditCancel" listener="#{administrarTipoDesecho.cancelarActualizacionDesecho}" update=":form:messages" />
+
+				<p:column headerText="Id" styleClass="table_content">
+					<h:outputText value="#{listaTipoDesecho.idTipoDesecho}" />
+				</p:column>
+				<p:column headerText="Descripción (español)" styleClass="table_content">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{listaTipoDesecho.nombreTipoDesechoEspanol}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{listaTipoDesecho.nombreTipoDesechoEspanol}" style="width:96%" label="Descripción (español)" required="true" onblur="value=value.toUpperCase()" maxlength="99"/>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Descripción (ingles)" styleClass="table_content">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{listaTipoDesecho.nombreTipoDesechoIngles}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{listaTipoDesecho.nombreTipoDesechoIngles}" style="width:96%" label="Descripción (ingles)" required="true" onblur="value=value.toUpperCase()" maxlength="99"/>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Fecha Creacion" styleClass="table_content">
+					<h:outputText value="#{listaTipoDesecho.creationDate}">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Creado Por" styleClass="table_content">
+					<h:outputText value="#{listaTipoDesecho.createdBy}" />
+				</p:column>
+				<p:column headerText="Activo" styleClass="table_content">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{listaTipoDesecho.activo}" />
+						</f:facet>
+						<f:facet name="input">
+							<h:selectOneMenu value="#{listaTipoDesecho.activo}">
+								<f:selectItem itemLabel="Activo" itemValue="A" />
+								<f:selectItem itemLabel="Inactivo" itemValue="I" />
+							</h:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>				
+				<p:column headerText="Editar" style="width:6%" styleClass="table_content">
+					<p:rowEditor />
+				</p:column>
+			</p:dataTable>
+		</h:form>
+		
+		<h:form id="formPanel">
+			<p:dialog id="dialogoTipoDesecho" widgetVar="dialogoTipoDesecho" header="Nuevo Tipo de Desecho" resizable="false">
+				<p:messages id="messagesPanel" autoUpdate="true" closable="true" for="mensajePanel" />
+				<h:panelGrid id="panel" columns="3" cellpadding="5" cellspacing="1">
+
+					<p:outputLabel value="Descripcion en español: " />
+					<p:inputText id="descripcionEspanol" value="#{administrarTipoDesecho.spaTipoDesecho.nombreTipoDesechoEspanol}" required="true" requiredMessage="El campo de descripcion en español es requerido." onblur="value=value.toUpperCase()" maxlength="99">
+						<f:validateLength minimum="1" />
+					</p:inputText>
+					<p:message for="descripcionEspanol" display="icon" />
+
+					<p:outputLabel value="Descripcion en ingles: " />
+					<p:inputText id="descripcionIngles" value="#{administrarTipoDesecho.spaTipoDesecho.nombreTipoDesechoIngles}" required="true" requiredMessage="El campo de descripcion en ingles es requerido." onblur="value=value.toUpperCase()" maxlength="99">
+						<f:validateLength minimum="1" />
+					</p:inputText>
+					<p:message for="descripcionIngles" display="icon" />
+					
+					<f:facet name="footer">
+						<p:commandButton value="Guardar" icon="save-ico" actionListener="#{administrarTipoDesecho.guardarDesecho}" update=":formPanel:dialogoTipoDesecho, :form:tablaTipoDesecho"
+							oncomplete="dialogoTipoDesecho.hide()" partialSubmit="true" styleClass="button_menu" validateClient="true" />
+					</f:facet>
+				</h:panelGrid>
+			</p:dialog>
+		</h:form>
+		
+	</ui:define>
+</ui:composition>
+
+</html>

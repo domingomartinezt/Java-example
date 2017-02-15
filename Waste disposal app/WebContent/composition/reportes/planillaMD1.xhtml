@@ -1,0 +1,79 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:ui="http://java.sun.com/jsf/facelets">
+<script type="text/javascript">  
+	function start() {  
+	    PF('statusDialog').show();  
+	}  
+	  
+	function stop() {  
+	    PF('statusDialog').hide();  
+	}  
+</script>  
+<ui:composition template="../../template/principal.xhtml">
+	<ui:define name="content">
+
+
+		<p:panelGrid>
+			<f:facet name="header">
+				<p:row>
+					<p:column colspan="8" styleClass="form-header">
+							Planilla MD1
+						</p:column>				
+				</p:row>
+			</f:facet>
+		</p:panelGrid>
+		<h:form id="form" enctype="multipart/form-data">
+		
+		<p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" style="float:bottom;" />					
+			
+			<p:dataTable id="tablasolicitudes" var="historico" value="#{reportes.spaHistoricoDocumento}" styleClass="table" emptyMessage="No se encontraron solicitudes." rows="14"
+				widgetVar="historicoTable" filteredValue="#{reportes.filteredHistoricos}" rowKey="#{historico.idHistoricoDocumento}" paginator="true" paginatorPosition="bottom" resizableColumns="true">
+
+		         <f:facet name="header">  
+		            <p:outputPanel>  
+		                <h:outputText value="Buscar en todos los campos:" />  
+		                <p:inputText id="globalFilter" onkeyup="historicoTable.filter()" style="width:150px" />  
+		            </p:outputPanel>  
+		        </f:facet>
+
+				<p:column headerText="N° Solicitud" styleClass="table_content" filterBy="#{historico.spaSolicitude.idSolicitud}" filterMatchMode="exact" style="width:10px">
+					<h:outputText value="#{historico.spaSolicitude.idSolicitud}"/>
+				</p:column>
+				<p:column headerText="Fecha Creación" styleClass="table_content" filterBy="#{historico.spaSolicitude.creationDate}" filterMatchMode="contains" style="width:20px">
+					<h:outputText value="#{historico.spaSolicitude.creationDate}">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+					</h:outputText>					
+				</p:column>
+				<p:column headerText="Motivo" styleClass="table_content" filterBy="#{historico.spaSolicitude.motivo}" filterMatchMode="contains" style="width:50px">
+					<h:outputText value="#{historico.spaSolicitude.motivo}"/>
+				</p:column>
+				<p:column headerText="Tipo" styleClass="table_content" filterBy="#{historico.spaSolicitude.spaTipoDocumento.abreviacion}" filterMatchMode="contains" style="width:35px">
+					<h:outputText value="#{historico.spaSolicitude.spaTipoDocumento.abreviacion}"/>
+				</p:column>					
+				<p:column headerText="Estatus" styleClass="table_content" filterBy="#{historico.spaEstatus.descripcion}" filterMatchMode="contains" style="width:40px">
+					<h:outputText value="#{historico.spaEstatus.descripcion}"/>
+				</p:column>	
+				<p:column headerText="Abjunto" styleClass="table_content" style="width:20px">
+					<h:commandLink ajax="false">
+						<f:setPropertyActionListener value="#{historico}" target="#{reportes.spaHistoricoDocumentoSeleccionado}"/>	
+						<h:outputText id="down" value="#{historico.getSpaSolicitude().getSpaAprobacionJunta().getSpaImagen().getFileName()}" />
+						<p:fileDownload value="#{reportes.file}"/>
+					</h:commandLink>				
+
+				</p:column>					
+		        <p:column style="width:10px">  
+		                <p:commandButton id="selectButton" action="#{reportes.reportePlanilla}" icon="ui-icon-search" title="View" ajax="false">  
+		                <f:setPropertyActionListener value="#{historico}" target="#{reportes.spaHistoricoDocumentoSeleccionado}" />  
+		            </p:commandButton>  
+		        </p:column> 		        	
+						
+			</p:dataTable>
+			
+		
+			
+		</h:form>
+
+
+	</ui:define>
+</ui:composition>
+
+</html>

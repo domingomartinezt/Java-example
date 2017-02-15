@@ -1,0 +1,126 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="../../template/principal.xhtml">
+	<ui:define name="content">
+		
+		<h:form id="form">
+			<p:messages id="messages" showDetail="true" autoUpdate="true" for="msgFrame" closable="true" style="float:bottom;" />		
+			<p:dataTable id="tabla" var="listaDesecho" value="#{administrarDesecho.spaDesechos}" widgetVar="desechoTable" styleClass="table"
+				emptyMessage="No se encontraron desechos registradas" rows="20" rowKey="#{listaDesecho.idDesecho}" paginator="true" paginatorPosition="bottom" editable="true"
+				selection="#{administrarDesecho.desechoSeleccionado}" selectionMode="single">
+				<f:facet name="header">
+					<p:outputLabel value="Desechos" styleClass="informe-header" />
+					<p:commandButton value="Nuevo" icon="agregar-ico" styleClass="button_menu" onclick="dialogo.show()" title="Nuevo desecho" />
+					<p:commandButton value="Eliminar" icon="borrar-ico" styleClass="button_menu" title="Elimnar" actionListener="#{administrarDesecho.eliminarDesecho}" update=":form:tabla">
+						<p:confirm header="Confirmacion" message="Desea eliminar el desecho selecciondo?" icon="ui-icon-alert" />
+					</p:commandButton>
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+						<p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+						<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					</p:confirmDialog>
+					<br/>
+					<br/>
+				</f:facet>
+				<p:ajax event="rowEdit" listener="#{administrarDesecho.actualizarDesecho}" update=":form:messages, :form:tabla" />
+				<p:ajax event="rowEditCancel" listener="#{administrarDesecho.cancelarActualizacionDesecho}" update=":form:messages, :form:tabla" />
+
+				<p:column headerText="Id" styleClass="table_content">
+					<h:outputText value="#{listaDesecho.idDesecho}" />
+				</p:column>			
+				<p:column headerText="Descripción (español)" styleClass="table_content">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{listaDesecho.descripcionEspanol}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{listaDesecho.descripcionEspanol}" label="Descripción (español)" required="true" onblur="value=value.toUpperCase()" maxlength="199"/>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Descripción (ingles)" styleClass="table_content">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{listaDesecho.descripcionIngles}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{listaDesecho.descripcionIngles}" label="Descripción (ingles)" required="true" onblur="value=value.toUpperCase()" maxlength="199"/>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Categoria" styleClass="table_content">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{listaDesecho.spaClasificacion}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu id="selectTratamiento" value="#{listaDesecho.spaClasificacion}" converter="#{clasificacionConverter}" required="true">
+								<f:selectItems value="#{administrarDesecho.spaClasificaciones}" var="c" itemLabel="#{c.descripcionEspanol}" itemValue="#{c}"/>
+								<f:validateLength minimum="1" />
+							</p:selectOneMenu>							
+						</f:facet>
+					</p:cellEditor>
+				</p:column>				
+				<p:column headerText="Fecha Creación" styleClass="table_content">
+					<h:outputText value="#{listaDesecho.creationDate}">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Creado Por" styleClass="table_content">
+					<h:outputText value="#{listaDesecho.createdBy}" />
+				</p:column>
+				<p:column headerText="Activo" styleClass="table_content">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{listaDesecho.activo}" />
+						</f:facet>
+						<f:facet name="input">
+							<h:selectOneMenu value="#{listaDesecho.activo}">
+								<f:selectItem itemLabel="Activo" itemValue="A" />
+								<f:selectItem itemLabel="Inactivo" itemValue="I" />
+							</h:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>				
+				<p:column headerText="Editar" style="width:6%" styleClass="table_content">
+					<p:rowEditor />
+				</p:column>
+			</p:dataTable>
+		</h:form>
+		
+		<h:form id="formPanel">
+			<p:dialog id="dialogo" widgetVar="dialogo" header="Nuevo desecho" resizable="false">
+				<p:messages id="messagesPanel" autoUpdate="true" closable="true" for="mensajePanel" />
+				<h:panelGrid id="panel" columns="3" cellpadding="5" cellspacing="1">
+
+					<p:outputLabel value="Descripcion en español: " />
+					<p:inputText id="descripcionEspanol" value="#{administrarDesecho.spaDesecho.descripcionEspanol}" required="true" requiredMessage="El campo de descripcion en español es requerido." onblur="value=value.toUpperCase()" maxlength="199">
+						<f:validateLength minimum="1" />
+					</p:inputText>
+					<p:message for="descripcionEspanol" display="icon" />
+
+					<p:outputLabel value="Descripcion en ingles: " />
+					<p:inputText id="descripcionIngles" value="#{administrarDesecho.spaDesecho.descripcionIngles}" required="true" requiredMessage="El campo de descripcion en ingles es requerido." onblur="value=value.toUpperCase()" maxlength="199">
+						<f:validateLength minimum="1" />
+					</p:inputText>
+					<p:message for="descripcionIngles" display="icon" />
+					
+					<p:outputLabel value="Clasificación: " />
+					<p:selectOneMenu id="clasificacion" value="#{administrarDesecho.spaDesecho.spaClasificacion}" converter="#{clasificacionConverter}" required="true" requiredMessage="Seleccione una clasificación.">
+						<f:selectItem itemValue="#{null}" itemLabel="-- Seleccione Uno --" />
+						<f:selectItems value="#{administrarDesecho.spaClasificaciones}" var="c" itemLabel="#{c.descripcionEspanol}" itemValue="#{c}"/>
+						<f:validateLength minimum="1" />
+					</p:selectOneMenu>					
+					<p:message for="clasificacion" display="icon" />					
+					
+					<f:facet name="footer">
+						<p:commandButton value="Guardar" icon="save-ico" actionListener="#{administrarDesecho.guardarDesecho}" update=":formPanel:dialogo, :form:tabla"
+							oncomplete="dialogo.hide()" partialSubmit="true" styleClass="button_menu" validateClient="true"/>
+					</f:facet>
+				</h:panelGrid>
+			</p:dialog>
+		</h:form>
+		
+	</ui:define>
+</ui:composition>
+
+</html>

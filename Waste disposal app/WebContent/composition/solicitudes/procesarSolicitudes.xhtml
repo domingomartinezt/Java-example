@@ -1,0 +1,306 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="../../template/principal.xhtml">
+	<ui:define name="content">
+
+
+		<p:panelGrid>
+			<f:facet name="header">
+				<p:row>
+					<p:column colspan="8" styleClass="form-header">
+							Procesar Solicitudes
+						</p:column>				
+				</p:row>
+			</f:facet>
+		</p:panelGrid>
+		<h:form id="form" enctype="multipart/form-data">
+							
+			<h:panelGrid columns="2" cellpadding="5" cellspacing="1">
+			<p:outputLabel value="Estatus: " />
+			<p:selectOneMenu id="comboEstatus" value="#{procesarSolicitudes.estatusSeleccionado}" update=":form:tablasolicitudes">
+				<f:selectItem itemValue="" itemLabel="TODOS" />
+				<f:selectItems value="#{procesarSolicitudes.spaListaEstatus}" var="e" itemLabel="#{e.getDescripcion()}" itemValue="#{e.getCodEstatus()}" />
+				<p:ajax listener="#{procesarSolicitudes.filtrarSolicitudes}" update=":form:tablasolicitudes" />
+			</p:selectOneMenu>
+			</h:panelGrid>
+			
+			<p:dataTable id="tablasolicitudes" var="historico" value="#{procesarSolicitudes.spaHistoricoDocumento}" styleClass="table" emptyMessage="No se encontraron solicitudes." rows="20"
+				rowKey="#{historico.idHistoricoDocumento}" paginator="true" paginatorPosition="bottom" selection="#{procesarSolicitudes.spaHistoricoDocumentoSeleccionado}" selectionMode="single">
+				<p:ajax event="rowSelect" listener="#{procesarSolicitudes.buscarDatosAprobador}"  update=":form:detalleSolicitud" oncomplete="PF('detalleSolicitud').show()"/>
+				<p:column headerText="N° Solicitud" styleClass="table_content">
+					#{historico.spaSolicitude.idSolicitud}
+				</p:column>
+				<p:column headerText="Fecha Creación" styleClass="table_content">
+					<h:outputText value="#{historico.spaSolicitude.creationDate}">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+					</h:outputText>					
+				</p:column>
+				<p:column headerText="Motivo" styleClass="table_content">
+					#{historico.spaSolicitude.motivo}
+				</p:column>
+				<p:column headerText="Tipo" styleClass="table_content">
+					#{historico.spaSolicitude.spaTipoDocumento.abreviacion}
+				</p:column>					
+				<p:column headerText="Estatus" styleClass="table_content">
+					#{historico.spaEstatus.descripcion}
+				</p:column>	
+			</p:dataTable>
+			
+
+			<!-- Detalle de la solicitud -->
+			
+			<p:dialog id="detalleSolicitud" widgetVar="detalleSolicitud" header="Procesar Solicitud" resizable="false">
+
+			<p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" style="float:bottom;" />
+			
+			<p:tabView id="tabView"> 
+			<p:tab id="tab1" title="Solicitud">  
+				<p:fieldset legend="Datos Solicitante" id="Solicitante">
+					<h:panelGrid id="panelsolicitante" columns="4" cellpadding="5" cellspacing="1">
+												
+						<h:outputText value="Nombres: " />
+						<h:outputText value="#{procesarSolicitudes.trabajadorSolicitante.getNombre()}" styleClass="dato-bold"/>
+						
+						<h:outputText value="Apellidos: " />
+						<h:outputText value="#{procesarSolicitudes.trabajadorSolicitante.getApellido()}" styleClass="dato-bold"/>
+						
+						<h:outputText value="Departamento: " />
+						<h:outputText value="#{procesarSolicitudes.trabajadorSolicitante.getDepartamento().getDescription()}" styleClass="dato-bold"/>
+						
+						<h:outputText value="Centro de costo: " />
+						<h:outputText value="#{procesarSolicitudes.spaHistoricoDocumentoSeleccionado.spaSolicitude.centroCosto}" styleClass="dato-bold"/>	
+					</h:panelGrid>																				
+				</p:fieldset>	
+
+				<p:fieldset legend="Solicitud" id="Solicitud">
+
+					<h:panelGrid id="panelSolicitud" columns="4" cellpadding="5" cellspacing="1">
+	    		        <h:outputText value="Numero Solicitud:" />  
+	          			<h:outputText value="#{procesarSolicitudes.spaHistoricoDocumentoSeleccionado.spaSolicitude.idSolicitud}" styleClass="dato-bold" />  
+	
+						<h:outputText value="Tipo: " />
+						<h:outputText value="#{procesarSolicitudes.spaHistoricoDocumentoSeleccionado.spaSolicitude.spaTipoDocumento.descripcion}" class="dato-bold"/>
+						
+						<h:outputText value="Fecha Creacion: " />
+						<h:outputText value="#{procesarSolicitudes.spaHistoricoDocumentoSeleccionado.spaSolicitude.creationDate}" styleClass="dato-bold">
+							<f:convertDateTime pattern="dd/MM/yyyy hh:mm a" />
+						</h:outputText>	
+						
+						<h:outputText value="Estatus: " />
+						<h:outputText value="#{procesarSolicitudes.spaHistoricoDocumentoSeleccionado.spaEstatus.descripcion}" styleClass="dato-bold"/>
+						
+						<h:outputText value="Fecha de Aprobación: " />
+						<h:outputText value="#{procesarSolicitudes.spaHistoricoDocumentoAprobado.creationDate}" styleClass="dato-bold">
+							<f:convertDateTime pattern="dd/MM/yyyy hh:mm a" />
+						</h:outputText>						
+						
+						<h:outputText value="Aprobado Por: " />
+						<h:outputText value="#{procesarSolicitudes.nombreAprobador}" styleClass="dato-bold" />	
+					</h:panelGrid>
+					<h:panelGrid id="panelMotivo" columns="2" cellpadding="5" cellspacing="1">
+						<h:outputText value="Motivo para la desincorporacion: " />
+						<h:outputText value="#{procesarSolicitudes.spaHistoricoDocumentoSeleccionado.spaSolicitude.motivo}" styleClass="dato-bold"/>	
+					</h:panelGrid>
+					<p:dataTable id="tablaItems" var="items" value="#{procesarSolicitudes.spaHistoricoDocumentoSeleccionado.spaSolicitude.spaItemDesincorporar}" styleClass="table" emptyMessage="No posee items a desincorporar" rows="6"
+						paginator="true" paginatorPosition="bottom" editable="#{procesarSolicitudes.spaHistoricoDocumentoSeleccionado.spaEstatus.codEstatus == 'APR'}" selection="#{procesarSolicitudes.spaItemDesincorporarSeleccionado}" selectionMode="single" rowKey="#{items.idItemDesincorporar}">
+						<f:facet name="header">
+							<p:outputLabel value="Materiales y/o Productos a Desincorporar" styleClass="informe-header"/>
+						</f:facet>
+						<p:ajax event="rowEdit" listener="#{procesarSolicitudes.actualizarItemDesincorporar}" update=":form:messages, :form:tabView:tablaItems" />
+						<p:ajax event="rowEditCancel" listener="#{procesarSolicitudes.cancelarActualizacionItemDesincorporar}" update=":form:messages, :form:tabView:tablaItems" />
+						<p:column headerText="Material y/o Producto" styleClass="table_content">
+							#{items.descripcionItem}
+						</p:column>
+						<p:column headerText="Serial" styleClass="table_content">
+							#{items.serialItem}				
+						</p:column>
+						<p:column headerText="UM" styleClass="table_content">
+							#{items.spaUnidadMedida.abreviacion}
+						</p:column>
+						<p:column headerText="Cantidad" styleClass="table_content">
+							#{items.cantidadDesincorporar}
+						</p:column>		
+						<p:column headerText="Cantidad Recibida" styleClass="table_content">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{items.cantidadRecibida}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{items.cantidadRecibida}" label="Cantidad Recibida"
+									converter="javax.faces.Double" converterMessage="Ingrese un número entero o decimal.">
+									<f:convertNumber pattern="#0.00" locale="en" />
+									</p:inputText>									
+								</f:facet>								
+							</p:cellEditor>							
+						</p:column>	
+						<p:column headerText="Editar" style="width:6%" styleClass="table_content" rendered="#{procesarSolicitudes.spaHistoricoDocumentoSeleccionado.spaEstatus.codEstatus == 'APR'}">
+							<p:rowEditor />
+						</p:column>																	
+					</p:dataTable>	
+					<p:outputLabel value="Observacion: " />
+					<p:inputText id="observacion" value="#{procesarSolicitudes.spaHistoricoDocumentoNuevo.observaciones}" size="60" maxlength="499"/>
+					<!-- Boton para procesar la solicitud -->
+					<p:commandButton value="Marcar Solicitud en Proceso" styleClass="button_menu" title="Marcar Solicitud en Proceso." actionListener="#{procesarSolicitudes.cambiarEstatusEnProceso}" 
+					 update=":form:tablasolicitudes :form:tabView:Solicitud :form:tabView:desechos :form:tabView:tablaHistorial"
+					 process="@this :form:tabView:observacion"
+					 disabled="#{procesarSolicitudes.spaHistoricoDocumentoSeleccionado.spaEstatus.codEstatus != 'APR'}">
+						<p:confirm header="Confirmacion" message="Al colocar la solicitud en proceso no se podran recibir mas materiales o productos, desea continuar?" icon="ui-icon-alert" />
+					</p:commandButton>	
+
+					<!-- Boton para rechazar la solicitud -->
+					<p:commandButton id="boton3" value="Rechazar Solicitud" styleClass="button_menu" title="Marcar Solicitud como rechazada." actionListener="#{procesarSolicitudes.rechazar}" 
+					update=":form:tablasolicitudes :form:tabView:Solicitud :form:tabView:desechos :form:tabView:tablaHistorial"
+					disabled="#{procesarSolicitudes.spaHistoricoDocumentoSeleccionado.spaEstatus.codEstatus != 'APR'}" process="@this :form:tabView:observacion">
+						<p:confirm header="Confirmacion" message="Al colocar la solicitud como rechazada se culminará la solicitud no se podran realizar mas cambios, desea continuar?" icon="ui-icon-alert" />
+					</p:commandButton>															
+					
+				</p:fieldset>
+				
+				<p:fieldset legend="Archivo Adjunto" id="archivoAdjunto" rendered="#{procesarSolicitudes.spaHistoricoDocumentoSeleccionado.spaSolicitude.indReqAprobacionJunta == 'Y'}">
+					<h:commandLink immediate="true">
+						<p:fileDownload value="#{procesarSolicitudes.file}"/>
+						<h:outputText id="down" value="#{procesarSolicitudes.spaHistoricoDocumentoSeleccionado.getSpaSolicitude().getSpaAprobacionJunta().getSpaImagen().getFileName()}"/>
+					</h:commandLink>
+				</p:fieldset>
+			
+				</p:tab>
+				<p:tab id="tab2" title="Desechos">  
+
+				<p:fieldset legend="Desechos" id="desechos">
+					<h:panelGrid id="panelDesechos" columns="4" cellpadding="5" cellspacing="1">
+	    		        <h:outputText value="Tipo desecho:" />  
+			            <p:selectOneMenu id="tipoDesecho" value="#{procesarSolicitudes.spaTipoDesecho}" converter="#{tipoDesechoConverter}" required="true" requiredMessage="Seleccione un tipo de desecho.">  
+			                <f:selectItem itemLabel="--Seleccione--" itemValue="" />  
+			                <f:selectItems value="#{procesarSolicitudes.spaTiposDesechos}" var="td" itemLabel="#{td.nombreTipoDesechoEspanol}" itemValue="#{td}"/>  
+			                <p:ajax update="tratamiento" listener="#{procesarSolicitudes.handleTipoDesechoChange}" />  
+			            </p:selectOneMenu>
+	
+						<h:outputText value="Tratamiento: " />
+			            <p:selectOneMenu id="tratamiento" value="#{procesarSolicitudes.spaTipoTratamiento}" converter="#{tipoTratamientoConverter}" required="true" requiredMessage="Seleccione un tipo de tratamiento.">  
+			                <f:selectItem itemLabel="--Seleccione--" itemValue="" />  
+			                <f:selectItems value="#{procesarSolicitudes.spaTiposTratamientos}" var="tt" itemLabel="#{tt.descripcionEspanol}" itemValue="#{tt}"/>  
+			                <p:ajax update="categoria" listener="#{procesarSolicitudes.handleTipoTratamientoChange}" /> 
+			            </p:selectOneMenu>
+			            
+						<h:outputText value="categoria: " />
+			            <p:selectOneMenu id="categoria" value="#{procesarSolicitudes.spaCategoria}" converter="#{categoriaConverter}" required="true" requiredMessage="Seleccione un tipo de categoria.">  
+			                <f:selectItem itemLabel="--Seleccione--" itemValue="" />  
+			                <f:selectItems value="#{procesarSolicitudes.spaCategorias}" var="c" itemLabel="#{c.descripcionEspanol}" itemValue="#{c}"/>  
+			                <p:ajax update="clasificacion" listener="#{procesarSolicitudes.handleCategoriaChange}" /> 			                
+			            </p:selectOneMenu>
+			            
+						<h:outputText value="Clasificacion: " />
+			            <p:selectOneMenu id="clasificacion" value="#{procesarSolicitudes.spaClasificacion}" converter="#{clasificacionConverter}" required="true" requiredMessage="Seleccione un tipo de clasificacion.">  
+			                <f:selectItem itemLabel="--Seleccione--" itemValue="" />  
+			                <f:selectItems value="#{procesarSolicitudes.spaClasificaciones}" var="c" itemLabel="#{c.descripcionEspanol}" itemValue="#{c}"/>  
+  			                <p:ajax update="desecho" listener="#{procesarSolicitudes.handleClasificacionChange}" /> 	
+			            </p:selectOneMenu>			            			            
+
+						<h:outputText value="Desecho: " />
+			            <p:selectOneMenu id="desecho" value="#{procesarSolicitudes.spaDesecho}" converter="#{desechoConverter}" required="true" requiredMessage="Seleccione un tipo de desecho.">  
+			                <f:selectItem itemLabel="--Seleccione--" itemValue="" />  
+			                <f:selectItems value="#{procesarSolicitudes.spaDesechos}" var="d" itemLabel="#{d.descripcionEspanol}" itemValue="#{d}"/>  		                
+			            </p:selectOneMenu>
+			     	</h:panelGrid>	  
+			     	<h:panelGrid id="panelDesechosCantidades" columns="4" cellpadding="5" cellspacing="1"> 
+						<p:outputLabel value="Nombre Desecho: " />
+						<p:inputText id="nombreDesecho" value="#{procesarSolicitudes.spaDesechoSolicitud.nombreDesecho}" size="60" required="true" requiredMessage="Indique el nombre del desecho."/>		            
+
+						<p:outputLabel value="Catidad en Kg: " />
+						<p:inputText id="cantidadDesecho" value="#{procesarSolicitudes.spaDesechoSolicitud.cantidad}" size="10" required="true" requiredMessage="Indique la cantidad de desechos a procesar."/>
+
+					</h:panelGrid>	
+					
+
+					<p:commandButton value="Agregar" icon="agregar-ico" styleClass="button_menu" title="Nuevo desecho" actionListener="#{procesarSolicitudes.agregarDesecho}" update=":form:tabView:tablaDesechos :form:tabView:panelDesechos :form:tabView:panelDesechosCantidades"
+					disabled="#{procesarSolicitudes.spaHistoricoDocumentoSeleccionado.spaEstatus.codEstatus != 'PRO'}"/>
+					<p:commandButton value="Eliminar" icon="borrar-ico" styleClass="button_menu" title="Elimnar" actionListener="#{procesarSolicitudes.eliminarDesecho}" update=":form:tabView:tablaDesechos" process="@this :form:tabView:tablaDesechos"
+					disabled="#{procesarSolicitudes.spaHistoricoDocumentoSeleccionado.spaEstatus.codEstatus != 'PRO'}">
+						<p:confirm header="Confirmacion" message="Desea eliminar el desecho selecciondo?" icon="ui-icon-alert" />
+					</p:commandButton>
+					
+					
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+						<p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+						<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					</p:confirmDialog>	
+					<br/>
+					<br/>
+
+					
+					<p:dataTable id="tablaDesechos" var="desechos" value="#{procesarSolicitudes.spaHistoricoDocumentoSeleccionado.spaSolicitude.spaDesechoSolicituds}" styleClass="table" emptyMessage="No se han procesado desechos." rows="6"
+						paginator="true" paginatorPosition="bottom" editable="#{procesarSolicitudes.spaHistoricoDocumentoSeleccionado.spaEstatus.codEstatus == 'PRO'}" selection="#{procesarSolicitudes.spaDesechoSolicitudSeleccionado}" selectionMode="single" rowKey="#{desechos.idDesechoSolicitud}">
+						<p:ajax event="rowEdit" listener="#{procesarSolicitudes.actualizarDeschoSolicitud}" update=":form:messages, :form:tabView:tablaDesechos" />
+						<p:ajax event="rowEditCancel" listener="#{procesarSolicitudes.cancelarActualizacionDesechoSolicitud}" update=":form:messages, :form:tabView:tablaDesechos" process="@this tablaDesechos" />
+						<p:column headerText="Nombre" styleClass="table_content">
+							#{desechos.nombreDesecho}
+						</p:column>
+						<p:column headerText="Desecho" styleClass="table_content">
+							#{desechos.spaDesecho.descripcionEspanol}				
+						</p:column>
+						<p:column headerText="Clasificacion" styleClass="table_content">
+							#{desechos.spaDesecho.spaClasificacion.descripcionEspanol}
+						</p:column>
+						<p:column headerText="Categoria" styleClass="table_content">
+							#{desechos.spaDesecho.spaClasificacion.spaCategoria.descripcionEspanol}
+						</p:column>
+						<p:column headerText="Cantidad" styleClass="table_content">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{desechos.cantidad}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{desechos.cantidad}" label="Cantidad"/>
+								</f:facet>
+							</p:cellEditor>								
+						</p:column>								
+						<p:column headerText="Editar" style="width:6%" styleClass="table_content" rendered="#{procesarSolicitudes.spaHistoricoDocumentoSeleccionado.spaEstatus.codEstatus == 'PRO'}">
+							<p:rowEditor />
+						</p:column>																	
+					</p:dataTable>						
+
+					<p:outputLabel value="Observacion: " />
+					<p:inputText id="observacion2" value="#{procesarSolicitudes.spaHistoricoDocumentoNuevo.observaciones}" size="60" maxlength="499"/>
+					<!-- Boton para procesar la solicitud -->
+					<p:commandButton id="boton2" value="Ejecutar Solicitud" styleClass="button_menu" title="Marcar Solicitud como ejecutada." actionListener="#{procesarSolicitudes.cambiarEstatusEjecutada}" 
+					update=":form:tablasolicitudes :form:tabView:Solicitud :form:tabView:desechos :form:tabView:tablaHistorial"
+					disabled="#{procesarSolicitudes.spaHistoricoDocumentoSeleccionado.spaEstatus.codEstatus != 'PRO'}" process="@this :form:tabView:observacion2">
+						<p:confirm header="Confirmacion" message="Al colocar la solicitud como ejecutada se culminará la solicitud no se podran realizar mas cambios, desea continuar?" icon="ui-icon-alert" />
+					</p:commandButton>						
+					
+				</p:fieldset>
+				
+				</p:tab> 
+								
+				<p:tab id="tab4" title="Historial">  
+
+					<p:dataTable id="tablaHistorial" var="his" value="#{procesarSolicitudes.spaHistoricoDocumentoSeleccionado.spaSolicitude.spaHistoricoDocumentos}" 
+					 styleClass="table" emptyMessage="Sin historial">
+						<p:column headerText="Fecha" sortBy="creationDate" styleClass="table_content">
+							<h:outputText value="#{his.creationDate}">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+							</h:outputText>							
+						</p:column>
+						<p:column headerText="Responsable" styleClass="table_content">
+							#{his.createdBy}				
+						</p:column>
+						<p:column headerText="Estatus" styleClass="table_content">
+							#{his.spaEstatus.descripcion}
+						</p:column>
+						<p:column headerText="Observacion" styleClass="table_content">
+							#{his.observaciones}
+						</p:column>															
+					</p:dataTable>  				
+
+  				</p:tab>
+  				
+			</p:tabView> 
+
+			</p:dialog>			
+			
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+
+</html>

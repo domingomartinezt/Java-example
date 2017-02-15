@@ -1,0 +1,404 @@
+@CHARSET "ISO-8859-1";
+
+/* General Markup Styles
+---------------------------------------- */
+html {
+	font-size: 100%;
+	/* Always show a scrollbar for short pages - stops the jump when the scrollbar appears. non-IE browsers */
+	height: 101%;
+}
+
+header-tittle {
+	color: #000000;
+	top: 20px;
+	left: 50px;
+}
+
+#minwidth {
+	min-width: 960px;
+}
+
+#header.h_toyota {
+	background: url(../images/h_toyota/j_header_middle.png) repeat-x;
+}
+
+#header.h_toyota div {
+	background: url(../images/h_toyota/j_header_right.png) 100% 0 no-repeat;
+}
+
+#header.h_toyota div div {
+	background: url(../images/h_toyota/j_header_left_rtl.png) no-repeat;
+	height: 90px;
+}
+
+#header.h_toyota div div div {
+	background: url(../images/h_toyota/logo.png) no-repeat 10px 30px;
+}
+
+#header .title {
+	font-size: 24px;
+	font-weight: bold;
+	color: #555;
+	line-height: 95px;
+	margin-right: 10px;
+}
+
+#sesion {
+	font-family: Arial, Helvetica, sans-serif;
+	padding-top: 5px;
+	padding-right: 5px;
+	font-size: 10px;
+	font-weight: bold;
+	height: 20px;
+	border-left: #c0c0c0;
+	border-right: #c0c0c0;
+	border-bottom: #c0c0c0;
+	border-width: 1px;
+	border-style: solid;
+	background-color: #f6f6f6;
+}
+
+.ui-panelgrid td {
+	border-width: 0px;
+}
+
+/* Menu Style */
+.menu {
+	font-family: "calibri", Garamond, 'Comic Sans' !important;
+	font-size: 12px !important;
+	width: 100%;
+}
+
+.menu_secundary {
+	font-family: "calibri", Garamond, 'Comic Sans' !important;
+	font-size: 12px !important;
+	width: 94%;
+}
+
+/*-------------------------------------------------------*/
+.copyright {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	padding: 5px;
+	text-align: center;
+	color: #555555;
+}
+
+.button_menu {
+	float: right;
+	font-size: 10px !important;
+	margin-right: 5px;
+	margin-top: 6px;
+	margin-bottom: 5px;	
+}
+
+.button_menu_izquierda {
+	float:left;
+	font-size: 10px !important;
+	margin-right: 5px;
+	margin-top: 6px;
+	margin-bottom: 5px;	
+}
+
+.button_buscari {
+	font-size: 10px !important;
+	float: center !important;
+}
+
+.button_general {
+	font-size: 10px !important;
+}
+
+.paddingRightLabel {
+	padding-right: 10px !important;
+}
+
+.noborder {
+	border: 0px !important;
+	padding: 4px 4px;
+	height: 120px !important;
+}
+
+.content-general {
+	border: 0px !important;
+	padding: 4px 4px;
+}
+
+.panelgrid {
+	padding-left: 50px;
+	border: 0px !important;
+	padding: 4px 4px;
+}
+
+
+.ui-fieldset .ui-fieldset-legend{
+	padding: 4px 6px;
+	background: none;
+	border: 0px !important;
+	border-color: white;
+	font-weight: bold;
+}
+
+.ui-layout-unit .ui-layout-unit-content {
+	padding: 0em 0em;
+}
+
+.ui-widget-content a {
+	color: #000000;
+}
+
+.ui-widget .ui-widget {
+	font-size: 13px;
+}
+
+.ui-panelmenu .ui-menuitem-text {
+	float: left;
+	padding-left: 5px;
+}
+
+/* Full page Layout Header Styles */
+.ui-widget-header {
+	font-size: 15px;
+}
+
+.ui-layout-unit-header,.ui-layout-unit-footer {
+	padding: 0.3em 0.2em 0.3em 0.3em;
+}
+/*-------------------------------------------------------*/
+/* Confirm Dialog */
+.dialog {
+	font-size: 12px;
+}
+/*-------------------------------------------------------*/
+
+/* Table & Content */
+.table_content {
+	font-size: 13px !important;
+	text-wrap: none;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.table {
+	padding: 0.5em 0.5em;
+	width: auto;
+	table-layout: fixed;
+}
+
+.ui-widget-header { /* Table pagination */
+	font-size: 12px;
+}
+
+.row-unaproved {
+	background-color: #FAF2F2;
+}
+
+.row-clean {
+	background-color: #FFFFFF;
+}
+/*-------------------------------------------------------*/
+
+/* Detalle de Informe */
+.form-header {
+	width: 1250px;
+	height: 25px;
+	color: #b0110e;
+	font-style: oblique;
+	font-size: 16px;
+}
+
+.ui-datatable .ui-datatable-header,.ui-datatable .ui-datatable-footer {
+	text-align: left;
+}
+
+.ui-widget-header .form-header {
+	text-align: left;
+	font-size: 18px;
+	height: 40px;
+}
+
+.general-text-output {
+	font-size: 11px !important;
+	padding-left: 5px;
+}
+
+.report-text-area {
+	height: 30px;
+	width: 600px;
+	font-size: 12px !important;
+}
+
+/* Para los componentes desabilitados*/
+.ui-state-disabled,.ui-widget-content .ui-state-disabled,.ui-widget-header .ui-state-disabled
+	{
+	opacity: .90;
+	filter: Alpha(Opacity =                   100);
+}
+
+.ui-datepicker /* Estilo del calendario */ {
+	width: 14em;
+	padding: .2em .2em 0;
+	display: none;
+}
+
+.noborder-grid {
+	border: none;
+}
+
+.ui-datepicker table /* Estilo del calendario */ {
+	width: 100%;
+	font-size: 12px;
+	border-collapse: collapse;
+	margin: 0 0 .4em;
+}
+
+.ui-panelgrid td /* Estilo de los panel */ {
+	padding: 2px 2px;
+}
+
+.ui-chkbox .ui-chkbox-box {
+	width: 14px;
+	height: 14px;
+	display: inline-block;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	display: inline-block;
+}
+
+.label-padding {
+	padding-left: 100px !important;
+}
+
+.dato-bold {
+	font-weight: bold;
+}
+
+.auditor-cb {
+	width: 100px !important;
+	padding-bottom: 0px !important;
+	padding-top: 0px !important;
+}
+
+.header-custom {
+	text-align: center;
+	padding: 4px 10px 4px 10px;
+	border-bottom: 0px none;
+	border: 1px solid #a8a8a8;
+	background: #c4c4c4
+		url("/cia/javax.faces.resource/images/ui-bg_highlight-soft_100_c4c4c4_1x100.png.xhtml?ln=primefaces-aristo")
+		50% 50% repeat-x;
+	background: #c4c4c4 linear-gradient(top, rgba(255, 255, 255, 0.8),
+		rgba(255, 255, 255, 0));
+	background: #c4c4c4
+		-webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255,
+		0.8)), to(rgba(255, 255, 255, 0)));
+	background: #c4c4c4 -moz-linear-gradient(top, rgba(255, 255, 255, 0.8),
+		rgba(255, 255, 255, 0));
+	color: #333;
+	font-weight: bold;
+	text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.7);
+}
+
+.ui-datalist-table {
+	width: 150px;
+}
+
+.datalist-noborder .ui-widget-content {
+	border: none;
+}
+
+.panel-resp-gerencia {
+	padding: 0.5em 0.1em;
+}
+
+.ui-datatable .ui-column-filter {
+	display: block;
+	width: auto;
+	margin: auto;
+}
+/*-------------------------------------------------------*/
+
+/* Custom Icons for all Views */
+.agregar-ico {
+	background-image: url(../images/menu/add.png) !important;
+}
+
+.borrar-ico {
+	background-image: url(../images/menu/delete.png) !important;
+}
+
+.buscar-ico {
+	background-image: url(../images/menu/search.png) !important;
+}
+
+.back-ico {
+	background-image: url(../images/menu/back.png) !important;
+}
+
+.save-ico {
+	background-image: url(../images/menu/save.png) !important;
+}
+
+.close-ico {
+	background-image: url(../images/menu/close.png) !important;
+}
+
+.pdf-ico {
+	background-image: url(../images/menu/pdf.png) !important;
+}
+
+.aprobar-ico {
+	background-image: url(../images/menu/approve.png) !important;
+}
+
+.complete-ico {
+	background-image: url(../images/menu/completed.png) !important;
+}
+
+.attachment-ico {
+	background-image: url(../images/menu/attachment.png) !important;
+}
+
+.log-ico {
+	background-image: url(../images/menu/log.png) !important;
+}
+
+.supervisor-ico {
+	background-image: url(../images/menu/supervisor.png) !important;
+}
+
+.responsible-ico {
+	background-image: url(../images/menu/responsible.png) !important;
+}
+
+.viewer-ico {
+	background-image: url(../images/menu/viewer.png) !important;
+}
+
+.edit-ico {
+	background-image: url(../images/menu/edit.png) !important;
+}
+
+.action-ico {
+	background-image: url(../images/menu/arrowDown.png) !important;
+}
+
+#a.planilla{
+	background-image: url(../images/menu/planilla.png) !important;
+}
+
+.separator-text{
+	font-size: 14px;
+	font-weight: bold;
+	color: gray;
+	margin-top:8px;
+	margin-bottom:0px;
+	margin-right:0px;
+	margin-left:0px;
+
+}
+
+}
+/*-------------------------------------------------------*/

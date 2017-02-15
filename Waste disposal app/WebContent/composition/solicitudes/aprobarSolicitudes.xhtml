@@ -1,0 +1,161 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="../../template/principal.xhtml">
+	<ui:define name="content">
+
+
+		<p:panelGrid>
+			<f:facet name="header">
+				<p:row>
+					<p:column colspan="8" styleClass="form-header">
+							Aprobar Solicitudes
+						</p:column>				
+				</p:row>
+			</f:facet>
+		</p:panelGrid>
+		<h:form id="form" enctype="multipart/form-data">
+		
+		<p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" style="float:bottom;" />					
+			<h:panelGrid columns="2" cellpadding="5" cellspacing="1">
+			<p:outputLabel value="Estatus: " />
+			<p:selectOneMenu id="comboEstatus" value="#{aprobarSolicitudes.estatusSeleccionado}"   
+		                    update=":form:tablasolicitudes">
+				<f:selectItem itemValue="" itemLabel="TODOS" />
+				<f:selectItems value="#{aprobarSolicitudes.spaListaEstatus}" var="e" itemLabel="#{e.getDescripcion()}" itemValue="#{e.getCodEstatus()}" />
+				<p:ajax listener="#{aprobarSolicitudes.filtrarSolicitudes}" update=":form:tablasolicitudes" />
+			</p:selectOneMenu>
+			</h:panelGrid>
+			
+			<p:dataTable id="tablasolicitudes" var="historico" value="#{aprobarSolicitudes.spaHistoricoDocumento}" styleClass="table" emptyMessage="No se encontraron solicitudes." rows="20"
+				rowKey="#{historico.idHistoricoDocumento}" paginator="true" paginatorPosition="bottom" selection="#{aprobarSolicitudes.spaHistoricoDocumentoSeleccionado}" selectionMode="single">
+				<p:ajax event="rowSelect" listener="#{aprobarSolicitudes.buscarDatosAprobador}" update=":form:detalleSolicitud" oncomplete="PF('detalleSolicitud').show()"/>
+				<p:column headerText="N° Solicitud" styleClass="table_content">
+					#{historico.spaSolicitude.idSolicitud}
+				</p:column>
+				<p:column headerText="Fecha Creación" styleClass="table_content">
+					<h:outputText value="#{historico.spaSolicitude.creationDate}">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+					</h:outputText>					
+				</p:column>
+				<p:column headerText="Motivo" styleClass="table_content">
+					#{historico.spaSolicitude.motivo}
+				</p:column>
+				<p:column headerText="Tipo" styleClass="table_content">
+					#{historico.spaSolicitude.spaTipoDocumento.abreviacion}
+				</p:column>					
+				<p:column headerText="Estatus" styleClass="table_content">
+					#{historico.spaEstatus.descripcion}
+				</p:column>	
+
+			</p:dataTable>
+			
+
+			<!-- Detalle de la solicitud -->
+			<p:dialog id="detalleSolicitud" widgetVar="detalleSolicitud" header="Detalle Solicitud" resizable="false">
+
+				<p:fieldset legend="Datos Solicitante">
+					<h:panelGrid id="panelsolicitante" columns="4" cellpadding="5" cellspacing="1">
+												
+						<h:outputText value="Nombres: " />
+						<h:outputText value="#{aprobarSolicitudes.trabajadorSolicitante.getNombre()}" styleClass="dato-bold"/>
+						
+						<h:outputText value="Apellidos: " />
+						<h:outputText value="#{aprobarSolicitudes.trabajadorSolicitante.getApellido()}" styleClass="dato-bold"/>
+						
+						<h:outputText value="Departamento: " />
+						<h:outputText value="#{aprobarSolicitudes.trabajadorSolicitante.getDepartamento().getDescription()}" styleClass="dato-bold"/>
+						
+						<h:outputText value="Centro de costo: " />
+						<h:outputText value="#{aprobarSolicitudes.spaHistoricoDocumentoSeleccionado.spaSolicitude.centroCosto}" styleClass="dato-bold"/>	
+					</h:panelGrid>																				
+				</p:fieldset>	
+
+				<p:fieldset legend="Solicitud">
+
+					<h:panelGrid id="panelSolicitud" columns="4" cellpadding="5" cellspacing="1">
+	    		        <h:outputText value="Numero Solicitud:" />  
+	          			<h:outputText value="#{aprobarSolicitudes.spaHistoricoDocumentoSeleccionado.spaSolicitude.idSolicitud}" styleClass="dato-bold" />  
+	
+						<h:outputText value="Tipo: " />
+						<h:outputText value="#{aprobarSolicitudes.spaHistoricoDocumentoSeleccionado.spaSolicitude.spaTipoDocumento.descripcion}" class="dato-bold"/>
+						
+						<h:outputText value="Fecha Creacion: " />
+						<h:outputText value="#{aprobarSolicitudes.spaHistoricoDocumentoSeleccionado.spaSolicitude.creationDate}" styleClass="dato-bold">
+							<f:convertDateTime pattern="dd/MM/yyyy hh:mm a" />
+						</h:outputText>	
+						
+						<h:outputText value="Estatus: " />
+						<h:outputText value="#{aprobarSolicitudes.spaHistoricoDocumentoSeleccionado.spaEstatus.descripcion}" styleClass="dato-bold"/>
+						
+						<h:outputText value="Fecha de Aprobación: " />
+						<h:outputText value="#{aprobarSolicitudes.spaHistoricoDocumentoAprobado.creationDate}" styleClass="dato-bold">
+							<f:convertDateTime pattern="dd/MM/yyyy hh:mm a" />
+						</h:outputText>						
+						
+						<h:outputText value="Aprobado Por: " />
+						<h:outputText value="#{aprobarSolicitudes.nombreAprobador}" styleClass="dato-bold" />	
+					</h:panelGrid>
+					<h:panelGrid id="panelMotivo" columns="2" cellpadding="5" cellspacing="1">
+						<h:outputText value="Motivo para la desincorporacion: " />
+						<h:outputText value="#{aprobarSolicitudes.spaHistoricoDocumentoSeleccionado.spaSolicitude.motivo}" styleClass="dato-bold"/>	
+					</h:panelGrid>
+					<p:dataTable id="tablaItems" var="items" value="#{aprobarSolicitudes.spaHistoricoDocumentoSeleccionado.spaSolicitude.spaItemDesincorporar}" styleClass="table" emptyMessage="No posee items a desincorporar" rows="6"
+						paginator="true" paginatorPosition="bottom">
+						<f:facet name="header">
+							<p:outputLabel value="Materiales y/o Productos a Desincorporar" styleClass="informe-header"/>
+						</f:facet>
+						<p:column headerText="Material y/o Producto" styleClass="table_content">
+							#{items.descripcionItem}
+						</p:column>
+						<p:column headerText="Serial" styleClass="table_content">
+							#{items.serialItem}				
+						</p:column>
+						<p:column headerText="UM" styleClass="table_content">
+							#{items.spaUnidadMedida.abreviacion}
+						</p:column>
+						<p:column headerText="Cantidad" styleClass="table_content">
+							#{items.cantidadDesincorporar}
+						</p:column>							
+					</p:dataTable>							
+					
+				</p:fieldset>
+				
+				<p:fieldset legend="Reportes">
+					<p:commandButton value="Planilla MD-1" icon="pdf-ico" styleClass="button_menu_izquierda" actionListener="#{aprobarSolicitudes.reportePlanilla}"   process="@this" ajax="false"/>				
+				</p:fieldset>	
+				
+				<p:fieldset legend="Archivo Adjunto" id="archivo_adjunto" rendered="#{aprobarSolicitudes.spaHistoricoDocumentoSeleccionado.spaSolicitude.indReqAprobacionJunta == 'Y'}">
+					<h:commandLink>
+						<p:fileDownload value="#{aprobarSolicitudes.file}"/>
+						<h:outputText id="down" value="#{aprobarSolicitudes.spaHistoricoDocumentoSeleccionado.getSpaSolicitude().getSpaAprobacionJunta().getSpaImagen().getFileName()}" />
+					</h:commandLink>
+				</p:fieldset>
+
+
+				<p:fieldset legend="Aprobación / Rechazo" rendered="#{aprobarSolicitudes.spaHistoricoDocumentoSeleccionado.spaEstatus.codEstatus == 'PAP'}">
+					<p:outputLabel value="Observacion: " />
+					<p:inputText id="observacion" value="#{aprobarSolicitudes.spaHistoricoDocumentoNuevo.observaciones}" size="60" maxlength="499"/>
+					<!-- Boton para aprobar la solicitud -->
+					<p:commandButton value="Rechazar Solicitud" styleClass="button_menu" title="Rechazar solicitud pendiente por aprobar." actionListener="#{aprobarSolicitudes.rechazar}" update="tablasolicitudes" 
+					oncomplete="detalleSolicitud.hide()" disabled="#{aprobarSolicitudes.spaHistoricoDocumentoSeleccionado.spaEstatus.codEstatus != 'PAP'}">
+						<p:confirm header="Confirmacion" message="Desea rechazar la solicitud?" icon="ui-icon-alert" />
+					</p:commandButton>					
+					<p:commandButton value="Aprobar Solicitud" styleClass="button_menu" title="Aprobar solicitud pendiente por aprobar." actionListener="#{aprobarSolicitudes.aprobar}" update="tablasolicitudes" 
+					oncomplete="detalleSolicitud.hide()" disabled="#{aprobarSolicitudes.spaHistoricoDocumentoSeleccionado.spaEstatus.codEstatus != 'PAP'}">
+						<p:confirm header="Confirmacion" message="Desea aprobar la solicitud?" icon="ui-icon-alert" />
+					</p:commandButton>	
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+						<p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+						<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					</p:confirmDialog>					
+				</p:fieldset>	
+			
+
+			</p:dialog>			
+			
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+
+</html>

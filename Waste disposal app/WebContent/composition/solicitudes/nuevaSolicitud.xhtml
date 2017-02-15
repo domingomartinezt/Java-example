@@ -1,0 +1,195 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="../../template/principal.xhtml">
+	<ui:define name="content">
+
+
+		<p:panelGrid>
+			<f:facet name="header">
+				<p:row>
+					<p:column colspan="8" styleClass="form-header">
+							Nueva Solicitud
+						</p:column>				
+				</p:row>
+			</f:facet>
+		</p:panelGrid>
+		<h:form id="form">
+		
+		<p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true" closable="true" style="float:bottom;" />
+		
+			<!-- Datos del solicitante -->
+			<p:fieldset legend="Datos Solicitante">
+			<p:message for="datosUsuarios" />
+			<h:panelGrid id="datosUsuarios" columns="4" width="100%" cellpadding="5" cellspacing="1">
+				<p:outputLabel value="Nombre: " />
+				<h:outputText value="#{nuevaSolicitud.trabajadorTDV.nombreCompleto}" class="dato-bold"/>
+				<p:outputLabel value="Departamento: " />
+				<h:outputText value="#{nuevaSolicitud.trabajadorTDV.getDepartamento().description}" class="dato-bold"/>
+
+				<p:outputLabel value="Centro de costo: " />
+				<p:selectOneMenu id="comboCentroCosto" value="#{nuevaSolicitud.spaSolicitudes.centroCosto}" required="true" requiredMessage="Debe seleccionar un centro de costo.">
+					<f:selectItem itemValue="" itemLabel="-- Seleccione Uno --" />
+					<f:selectItems value="#{nuevaSolicitud.centrosCosto}" var="cc" itemLabel="#{cc.getFlexValue()}" itemValue="#{cc.getFlexValue()}" />
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Aprobador: " />
+				<p:selectOneMenu id="comboAprobador" value="#{nuevaSolicitud.spaSolicitudes.personIdAprueba}" required="true" requiredMessage="Debe seleccionar un aprobador.">
+					<f:selectItem itemValue="" itemLabel="-- Seleccione Uno --" />
+					<f:selectItems value="#{nuevaSolicitud.jerarquiaTrabajadorTDV}" var="a" itemLabel="#{a.getNombreCompleto()}" itemValue="#{a.getPersonId()}" />
+				</p:selectOneMenu>
+			</h:panelGrid>
+			</p:fieldset>
+						
+			<!-- Materiales a desincorporar tabla -->
+			<p:fieldset legend="Materiales y/o productos a desincorporar">
+			<p:commandButton value="Nuevo" icon="agregar-ico" styleClass="button_menu" onclick="dialogoItem.show()" title="Item a desincorporar" process="@this"/>
+			<p:commandButton value="Eliminar" icon="borrar-ico" styleClass="button_menu" title="Elimnar" actionListener="#{nuevaSolicitud.eliminarItemDesincorporar}" update="tablaItemDesincorporar"
+				process="@this tablaItemDesincorporar">
+				<p:confirm header="Confirmacion" message="Desea eliminar el item a desincorporar de la solicitud?" icon="ui-icon-alert" />
+			</p:commandButton>
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+				<p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+			<br/>
+			<br/>
+			<p:dataTable id="tablaItemDesincorporar" var="itemDesincorporar" value="#{nuevaSolicitud.listaItemDesincorporar}" styleClass="table" emptyMessage="Ingrese un item a desincorporar" rows="10"
+				rowKey="#{itemDesincorporar.rowKey}" paginator="true" paginatorPosition="bottom" editable="true" selection="#{nuevaSolicitud.itemDesincorporarSeleccionado}" selectionMode="single">
+				<p:ajax event="rowEdit" listener="#{nuevaSolicitud.actualizarItemDesincorporar}" update=":form:messages" />
+				<p:ajax event="rowEditCancel" listener="#{nuevaSolicitud.cancelarActualizacionDesecho}" update=":form:messages" />
+
+				<p:column headerText="Material y/o producto" styleClass="table_content">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{itemDesincorporar.descripcionItem}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{itemDesincorporar.descripcionItem}" style="width:96%" label="Material y/o producto" required="true" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Serial" styleClass="table_content">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{itemDesincorporar.serialItem}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{itemDesincorporar.serialItem}" style="width:96%" label="Serial" required="true" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Cantidad" styleClass="table_content" style="width:15%">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{itemDesincorporar.cantidadDesincorporar}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{itemDesincorporar.cantidadDesincorporar}" style="width:15%" label="Cantidad" required="true" emptyValue="empty"
+							converter="javax.faces.Double" converterMessage="Ingrese un número entero o decimal.">
+							<f:convertNumber pattern="#0.00" locale="en" />
+							</p:inputText>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="UM" styleClass="table_content">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{itemDesincorporar.spaUnidadMedida}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu id="um" value="#{itemDesincorporar.spaUnidadMedida}" converter="#{unidadMedidaConverter}" required="true">
+								<f:selectItems value="#{nuevaSolicitud.spaUnidadesMedida}" var="um" itemLabel="#{um.abreviacion}" itemValue="#{um}" />
+								<f:validateLength minimum="1" />
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Editar" style="width:6%" styleClass="table_content">
+					<p:rowEditor />
+				</p:column>
+			</p:dataTable>
+			</p:fieldset>
+
+			<!-- Materiales a desincorporar panel emergente para agregar items -->
+			<p:dialog id="dialogoItem" widgetVar="dialogoItem" header="Nuevo item a desincorporar" resizable="false">
+				<!-- <p:messages id="messagesPanel" autoUpdate="true" closable="true" for="mensajePanel" /> -->
+				<h:panelGrid id="panel" columns="3" cellpadding="5" cellspacing="1">
+
+					<p:outputLabel value="Material y/o producto a desincorporar: " />
+					<p:inputText id="material" value="#{nuevaSolicitud.spaItemDesincorporar.descripcionItem}" required="true" requiredMessage="El campo de material es requerido.">
+					</p:inputText>
+					<p:message for="material" display="icon" />
+
+					<p:outputLabel value="Serial: " />
+					<p:inputText id="serial" value="#{nuevaSolicitud.spaItemDesincorporar.serialItem}" required="true" requiredMessage="El campo de serial es requerido.">
+					</p:inputText>
+					<p:message for="serial" display="icon" />
+
+					<p:outputLabel value="Catidad: " />
+					<p:inputText id="cantidad" value="#{nuevaSolicitud.spaItemDesincorporar.cantidadDesincorporar}" required="true" requiredMessage="El campo cantidad es requerido.">
+					</p:inputText>
+					<p:message for="cantidad" display="icon" />
+
+					<p:outputLabel value="Unidad de medida: " />
+					<p:selectOneMenu id="desecho" value="#{nuevaSolicitud.spaItemDesincorporar.spaUnidadMedida}" converter="#{unidadMedidaConverter}" required="true" requiredMessage="Seleccione una unidad de medida.">
+						<f:selectItem itemValue="#{null}" itemLabel="-- Seleccione Uno --" />
+						<f:selectItems value="#{nuevaSolicitud.spaUnidadesMedida}" var="um" itemLabel="#{um.abreviacion}" itemValue="#{um}" />
+					</p:selectOneMenu>
+
+					<f:facet name="footer">
+						<p:commandButton value="Guardar" icon="save-ico" actionListener="#{nuevaSolicitud.agregarItemDesincorporar}" update=":form:dialogoItem, :form:tablaItemDesincorporar" process="panel"
+							oncomplete="dialogoItem.hide()" partialSubmit="true" styleClass="button_menu" />
+					</f:facet>
+				</h:panelGrid>
+			</p:dialog>
+
+			<!-- Motivo -->
+			<p:fieldset legend="Motivo">
+			<h:panelGrid id="panelMotivo" columns="6" cellpadding="5" cellspacing="1">
+				<p:outputLabel value="Motivo o causa de la desincorporación: " />
+				<p:inputText id="motivo" size="103" value="#{nuevaSolicitud.spaSolicitudes.motivo}" required="true" requiredMessage="El campo motivo es requerido." maxlength="999"/>
+			</h:panelGrid>
+			</p:fieldset>			
+
+			<!-- Aprobacion de junta -->
+
+			<p:fieldset legend="Solicitud de aprobación a junta">
+			<h:panelGrid id="grid3" columns="2" cellpadding="5" cellspacing="1">
+				<p:outputLabel value="Requiere aprobacion de junta directiva: " />
+				<p:selectBooleanCheckbox id="checkboxId" value="#{nuevaSolicitud.reqAprobacion}">
+					<p:ajax event="change" update="datosSolApr" />
+				</p:selectBooleanCheckbox>
+			</h:panelGrid>
+
+			<h:panelGrid id="datosSolApr" columns="2" cellpadding="5" cellspacing="1">
+				<p:outputLabel rendered="#{nuevaSolicitud.reqAprobacion}" value="Background: " />
+				<p:inputText rendered="#{nuevaSolicitud.reqAprobacion}" required="#{nuevaSolicitud.reqAprobacion}" value="#{nuevaSolicitud.spaAprobacionJunta.background}" size="118" requiredMessage="El campo Background es requerido cuando la solicitud tiene asociada una aprobación de junta." maxlength="999"/>
+				<p:outputLabel rendered="#{nuevaSolicitud.reqAprobacion}" value="Objetive and Description: " />
+				<p:inputText rendered="#{nuevaSolicitud.reqAprobacion}" required="#{nuevaSolicitud.reqAprobacion}" value="#{nuevaSolicitud.spaAprobacionJunta.objetiveDescription}" size="118" requiredMessage="El campo Objetive and Description es requerido cuando la solicitud tiene asociada una aprobación de junta." maxlength="999"/>
+				<p:outputLabel rendered="#{nuevaSolicitud.reqAprobacion}" value="Reason: " />
+				<p:inputText rendered="#{nuevaSolicitud.reqAprobacion}" required="#{nuevaSolicitud.reqAprobacion}" value="#{nuevaSolicitud.spaAprobacionJunta.reason}" size="118" requiredMessage="El campo Reason es requerido cuando la solicitud tiene asociada una aprobación de junta." maxlength="999"/>
+				<p:outputLabel rendered="#{nuevaSolicitud.reqAprobacion}" value="Request: " />
+				<p:inputText rendered="#{nuevaSolicitud.reqAprobacion}" required="#{nuevaSolicitud.reqAprobacion}" value="#{nuevaSolicitud.spaAprobacionJunta.request}" size="118" requiredMessage="El campo Request es requerido cuando la solicitud tiene asociada una aprobación de junta." maxlength="999"/>
+				<p:outputLabel rendered="#{nuevaSolicitud.reqAprobacion}" value="Quotation: " />
+				<p:inputText rendered="#{nuevaSolicitud.reqAprobacion}" required="#{nuevaSolicitud.reqAprobacion}" value="#{nuevaSolicitud.spaAprobacionJunta.quatation}" size="118" requiredMessage="El campo Quotation es requerido cuando la solicitud tiene asociada una aprobación de junta." maxlength="999"/>
+			</h:panelGrid>
+			</p:fieldset>
+
+			<!-- Obervaciones -->
+			<p:fieldset legend="Observaciones">
+			<h:panelGrid id="grid5" columns="1" cellpadding="5" cellspacing="1">
+				<p:outputLabel value="Para desincorporación de productos quimicos el envase debe estar identificado con la etiqueta donde se indique el nombre y la fecha de vencimiento." />
+			</h:panelGrid>
+			</p:fieldset>
+			
+			<!-- Boton para guardar la solicitud -->
+			<p:commandButton value=" Crear Solicitud" icon="save-ico" actionListener="#{nuevaSolicitud.guardarSolicitud}" update="form" process="@this comboCentroCosto comboAprobador motivo datosSolApr" styleClass="button_menu"/>
+			
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+
+</html>

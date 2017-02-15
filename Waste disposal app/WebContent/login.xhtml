@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+<f:view contentType="text/html">
+	<h:head>
+		<f:facet name="first">
+			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
+			<title>Sistema de Procesos Ambientales</title>
+		</f:facet>
+		<meta http-equiv="X-UA-Compatible" content="IE=8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+		<link href="#{request.contextPath}/css/style.css" rel="stylesheet" type="text/css" />
+		<link rel="icon" type="image/gif" href="#{request.contextPath}/images/favicon.gif" />
+
+	</h:head>
+	<h:body>
+		<p:layout fullPage="true">
+			<p:layoutUnit position="north" resizable="false" closable="false" minSize="140" styleClass="noborder">
+				<ui:include src="composition/general/header.xhtml" />
+			</p:layoutUnit>
+
+			<p:layoutUnit id="center" position="center" styleClass="noborder">
+				<p:dialog id="BrowserError" widgetVar="errorDlg" header="Aviso!" visible="#{login.error}" onHide="dlg.show()" resizable="false" height="320" width="400" modal="true" appendToBody="true">
+					<h:form>
+						<p:panelGrid columns="1">
+							<p:outputLabel value="Está ingresando con el navegador #{login.browser}." />
+							<p:outputPanel>
+								<p>Esta aplicación no funcionará correctamente con dicho navegador</p>
+								<p>Le recomendamos utilizar alguno de los siguientes navegadores:</p>
+								<p>- Internet Explorer 8+</p>
+								<p>- Google Chrome 25+</p>
+								<p>- Mozilla Firefox 15+</p>
+							</p:outputPanel>
+							<p:separator />
+							<p:commandButton value="Aceptar" actionListener="#{login.accept()}" onclick="errorDlg.hide()" />
+							<p class="centerButton">En caso de no seguir las recomendaciones se perderán algunas funcionalidades</p>
+						</p:panelGrid>
+					</h:form>
+				</p:dialog>
+				<p:dialog id="dialog" header="Ingreso" widgetVar="dlg" resizable="false" closable="false" visible="#{!login.error}">
+					<h:form rendered="#{param['error'] != null}">
+						<div class="ui-messages-error ui-corner-all">
+							<span class="ui-messages-error-icon" /> <span class="ui-messages-error-summary">Usuario y/o contraseña incorrectos</span>
+						</div>
+					</h:form>
+					<form method="post" action="j_security_check">
+						<h:panelGrid columns="2">
+							<h:outputLabel value="Usuario" />
+							<input id="j_username" type="text" name="j_username" class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all" />
+
+							<h:outputLabel value="Contraseña" />
+							<input id="j_password" type="password" name="j_password" class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all" />
+
+							<h:outputText value="" />
+							<h:panelGrid columns="2">
+								<input type="submit" name="submit" value="Ingresar" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-left" style="padding: 5px;" />
+							</h:panelGrid>
+						</h:panelGrid>
+					</form>
+				</p:dialog>
+
+			</p:layoutUnit>
+
+			<p:layoutUnit position="south" minSize="55">
+				<ui:include src="composition/general/footer.xhtml" />
+			</p:layoutUnit>
+		</p:layout>
+	</h:body>
+</f:view>
+</html>

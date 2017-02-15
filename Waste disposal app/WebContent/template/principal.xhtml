@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+<f:view contentType="text/html">
+	<h:head>
+		<f:facet name="first">
+			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
+			<title>SISTEMA DE PROCESOS AMBIENTALES</title>
+		</f:facet>
+		<meta http-equiv="Content-Type" content="text/html;  charset=UTF-8" />		
+		<link href="#{request.contextPath}/css/style.css" rel="stylesheet" type="text/css" />
+		<link rel="icon" type="image/gif" href="#{request.contextPath}/images/favicon.gif" />
+
+	</h:head>
+	<h:body>
+		<p:layout fullPage="true">
+			<p:layoutUnit position="north" resizable="false" closable="false" minSize="90" styleClass="noborder">
+				<ui:include src="../composition/general/header.xhtml" />
+			</p:layoutUnit>
+
+		   <p:layoutUnit id="center" position="center" styleClass="content-general">
+					<ui:insert name="content" />
+			</p:layoutUnit>
+			
+			<p:layoutUnit position="west" header="MENU" resizable="false" collapsible="true" effect="drop" size="250">
+				<ui:include src="../composition/general/generalMenu.xhtml" />
+			</p:layoutUnit>
+
+			<p:layoutUnit position="south" minSize="55">
+				<ui:include src="../composition/general/footer.xhtml" />
+			</p:layoutUnit>
+		</p:layout>
+	</h:body>
+</f:view>
+</html>

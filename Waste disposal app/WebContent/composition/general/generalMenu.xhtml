@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+<h:form>
+	<p:panelMenu styleClass="menu">
+		<p:submenu label="Solicitudes" icon="ui-icon-wrench">
+			<p:menuitem value="Crear solicitud MD-1"  url="/composition/solicitudes/nuevaSolicitud.xhtml" ajax="true" />
+			<p:menuitem value="Ver solicitudes"  url="/composition/solicitudes/solicitudesCreadas.xhtml" ajax="true" />	
+			<p:menuitem value="Aprobar solicitudes"  url="/composition/solicitudes/aprobarSolicitudes.xhtml" ajax="true" />	
+			<p:menuitem value="Procesar solicitudes"  url="/composition/solicitudes/procesarSolicitudes.xhtml" ajax="true" rendered="#{request.isUserInRole('administrador') || request.isUserInRole('analista')}"/>				
+		</p:submenu>	
+		<p:submenu label="Reportes" icon="ui-icon-wrench" rendered="#{request.isUserInRole('administrador') || request.isUserInRole('analista') || request.isUserInRole('reportes')}">
+			<p:menuitem value="Planilla MD-1"  url="/composition/reportes/planillaMD1.xhtml" ajax="true" rendered="#{request.isUserInRole('administrador') || request.isUserInRole('analista') || request.isUserInRole('reportes')}" />		
+			<p:menuitem value="Waste EPI"  url="/composition/reportes/wasteEpi.xhtml" ajax="true" rendered="#{request.isUserInRole('administrador') || request.isUserInRole('analista') || request.isUserInRole('reportes')}"/>
+		</p:submenu>		
+		<p:submenu label="Administración" icon="ui-icon-wrench" rendered="#{request.isUserInRole('administrador')}" >
+			<p:submenu label="Residuos" rendered="#{request.isUserInRole('administrador')}" >
+				<p:menuitem value="Tipos"  url="/composition/administracion/tiposDesechos.xhtml" ajax="true" rendered="#{request.isUserInRole('administrador')}" />
+				<p:menuitem value="Tratamientos" url="/composition/administracion/tiposTratamientos.xhtml" ajax="true" rendered="#{request.isUserInRole('administrador')}" />
+				<p:menuitem value="Categorias"  url="/composition/administracion/categorias.xhtml" ajax="true" rendered="#{request.isUserInRole('administrador')}" />
+				<p:menuitem value="Clasificaciones"  url="/composition/administracion/clasificaciones.xhtml" ajax="true" rendered="#{request.isUserInRole('administrador')}" />
+				<p:menuitem value="Desechos"  url="/composition/administracion/desechos.xhtml" ajax="true" rendered="#{request.isUserInRole('administrador')}" />
+			</p:submenu>
+			<p:menuitem value="Unidades de medida"  url="/composition/administracion/unidadesMedida.xhtml" ajax="true" rendered="#{request.isUserInRole('administrador')}" />
+		</p:submenu>
+	</p:panelMenu>
+</h:form>
+</html>
