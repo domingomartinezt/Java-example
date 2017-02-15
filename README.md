@@ -1,2 +1,2 @@
 # examples
-Examples of different codes and project that I did.
+Examples of different codes that I did.
