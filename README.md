@@ -4,4 +4,6 @@ Because I have signed confidentiality agreement with the company where I used to
 
 Following, a description of the differents folders present in this repository.
 
-#Examples
+## Waste Disposal App
+Web application to process disposal of Toyota of Venezuela
+Designed database on Oracle, backend and frontend using Java EE technologies + Prime Faces.
