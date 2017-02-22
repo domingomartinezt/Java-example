@@ -9,3 +9,5 @@ Web application to process disposal of Toyota of Venezuela
 Designed database on Oracle, backend and frontend using Java EE technologies + Prime Faces.
 
 ### Documentation
+This folder contains the documentation (in spanish) of the application in pdf format. You can see the different UML diagrams used, the database diagram, configurations of the server in test environment. The user manual and test certification document.
+###EJB
