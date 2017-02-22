@@ -16,3 +16,6 @@ Contains the business logic and back end for the application. You can see the im
 Contains the Managed Beans for the view controller tier and the implementation of Primeface.
 ####\WebContent
 Contains the implementation of the view tier using HTML, PrimeFaces, XHTML and CSS. 
+
+## 3D
+In this folder you will find some of mine 3D design and blueprints to construct two of those designs.
