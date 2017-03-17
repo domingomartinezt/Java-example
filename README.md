@@ -8,15 +8,15 @@ Following, a description of the differents folders present in this repository.
 Web application to process disposal of Toyota of Venezuela
 Designed database on Oracle, backend and frontend using Java EE technologies + Prime Faces.
 
-### \Documentation
+#### \Documentation
 This folder contains the documentation (in spanish) of the application in pdf format. You can see the different UML diagrams used, the database diagram, configurations of the server in test environment. The user manual and test certification document.
 
-### \EJB
+#### \EJB
 Contains the business logic and back end for the application. You can see the implementation of JPA, EJBs.
 
-### \SRC
+#### \SRC
 Contains the Managed Beans for the view controller tier and the implementation of Primeface.
-### \WebContent
+#### \WebContent
 Contains the implementation of the view tier using HTML, PrimeFaces, XHTML and CSS. 
 
 ## 3D
