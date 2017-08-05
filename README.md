@@ -1,4 +1,4 @@
-Some examples of my previus job at Toyota. I will not show or share all the information. Rather than that, I will show only one part of the code and documentation of my last project.
+Some example of my previus job at Toyota. I will not show or share all the information. Rather than that, I will show only one part of the code and documentation of my last project.
 
 Following, a description of the differents folders present in this repository.
 
